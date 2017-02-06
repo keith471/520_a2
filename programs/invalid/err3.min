@@ -1,0 +1,7 @@
+// Invalid parenthesis
+
+var x: int;
+var y: int;
+var z: int;
+
+z = (x + y) * (((x*x + y*y) - 3);

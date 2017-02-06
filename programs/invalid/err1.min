@@ -1,0 +1,9 @@
+// Attempts to use an invalid character as part of an identifier
+
+var name: string;
+var age: int;
+var phone_#: string;
+
+name = "keith";
+age = 23;
+phone_# = "123-456-7890";

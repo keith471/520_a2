@@ -1,0 +1,5 @@
+./programs/valid/anotherGood.min: VALID
+./programs/valid/correct1.min: VALID
+./programs/valid/correct2.min: VALID
+./programs/valid/correct3.min: VALID
+./programs/valid/good.min: VALID

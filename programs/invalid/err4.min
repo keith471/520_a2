@@ -1,0 +1,9 @@
+// Invalid float
+
+var x: float;
+var y: float;
+var z: float;
+
+y = 0.01;
+z = 0.000;
+x = 00.001;

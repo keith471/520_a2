@@ -1,0 +1,3 @@
+// attempts to reassign a keyword
+
+var while: int;

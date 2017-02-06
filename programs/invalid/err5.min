@@ -1,0 +1,5 @@
+// read into an expression
+
+var x: int;
+
+read x * x;

@@ -1,0 +1,37 @@
+// First correct example program
+// Russian peasant multiplication
+//
+
+var total: int;
+var n1: int;
+var n2: int;
+var tmp: int;
+var odd: int;
+var _random_string: string;
+
+_random_string = "a super duper string 1234567890 \t\r\n\a\f\v\"\\ ~``!@#$%^&*()_-+={}[](()''<>,./?";
+
+read n1;
+read n2;
+total = 0;
+
+while n2 do
+    n1 = n1 * 2;
+    n2 = n2 / 2;
+    tmp = n2;
+    odd = 0;
+    while tmp do
+        if tmp-1 then
+            // pass
+        else
+            odd = 1;
+        endif
+        tmp = tmp / 2;
+    done
+    if odd then
+        total = total + n1;
+    endif
+done
+
+print "The result is:\n";
+print total;
