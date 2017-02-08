@@ -1,0 +1,8 @@
+var name: string;
+
+read name;
+
+// the expression in a while statement should be an integer
+while name do
+    // nothing
+done

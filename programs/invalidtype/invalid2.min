@@ -1,0 +1,6 @@
+var name: string;
+var age: int;
+
+age = 23;
+// assign an int into a string
+name = age;

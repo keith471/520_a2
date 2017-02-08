@@ -51,17 +51,17 @@ float {
     #ifdef FLEX_DEBUG
         printf("found a 'float'\n");
     #endif
-        return tFLOAT_TYPE; }
+        return tFLOAT; }
 int {
     #ifdef FLEX_DEBUG
         printf("found an 'int'\n");
     #endif
-        return tINT_TYPE; }
+        return tINT; }
 string {
     #ifdef FLEX_DEBUG
         printf("found a 'string'\n");
     #endif
-        return tSTRING_TYPE; }
+        return tSTRING; }
 print {
     #ifdef FLEX_DEBUG
         printf("found a 'print'\n");
@@ -122,13 +122,13 @@ read {
         printf("found a float: %s\n", yytext);
     #endif
         yylval.fval = atof(yytext);
-        return tFLOAT; }
+        return tFLOATVAL; }
 0|[1-9][0-9]* {
     #ifdef FLEX_DEBUG
         printf("found an int: %s\n", yytext);
     #endif
         yylval.ival = atoi(yytext);
-        return tINT; }
+        return tINTVAL; }
 [a-zA-z_][a-zA-z_0-9]* {
     #ifdef FLEX_DEBUG
         printf("found an identifier: %s\n", yytext);
@@ -150,5 +150,5 @@ read {
         printf("found a string: %s\n", yytext);
     #endif
         yylval.sval = strdup(yytext);
-        return tSTRING; }
+        return tSTRINGVAL; }
 %%

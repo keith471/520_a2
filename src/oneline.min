@@ -1,3 +1,0 @@
-// everything on one line
-
-var x: int; var y: float; if x then print y; endif while x do print y; x = x - 1; done print x; print "\a";

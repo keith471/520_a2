@@ -1,0 +1,5 @@
+var name: string;
+var weight: float;
+
+// assign a string into a float
+weight = name;

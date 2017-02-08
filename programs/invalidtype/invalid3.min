@@ -1,0 +1,6 @@
+var weight: float;
+var age: int;
+
+weight = 180.2;
+// assign a float into an int
+age = weight;

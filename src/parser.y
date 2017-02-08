@@ -1,14 +1,23 @@
 %{
+// General
 #include <stdio.h>
 #include <stdlib.h>
 
-// stuff from flex that bison needs to know about
+// AST stuff
+#include "tree.h"
+
+// Stuff from flex that bison needs to know about
 extern int yylex();
 extern int yyparse();
-extern FILE *yyin;
+extern FILE* yyin;
 extern int yylineno;
 extern char* yytext;
 
+// AST stuff
+// TODO: Modify --> this should be the head of the AST
+extern EXP* theexpression;
+
+// called if there is a syntax or parsing error
 void yyerror(const char *s);
 %}
 
@@ -16,11 +25,12 @@ void yyerror(const char *s);
 	int ival;
 	float fval;
 	char *sval;
+    struct EXP* exp;
 }
 
 // define the constant-string tokens
 %token tVAR tCOLON
-%token tFLOAT_TYPE tINT_TYPE tSTRING_TYPE
+%token tFLOAT tINT tSTRING
 %token tWHILE tDO tDONE
 %token tIF tTHEN tELSE tENDIF
 %token tSEMICOLON
@@ -30,12 +40,13 @@ void yyerror(const char *s);
 %token tASSIGN
 %token tLPAREN tRPAREN
 %token <sval> tIDENTIFIER
-%token tENDL
 
 // define the "terminal symbols" and associate each with a field of the union:
-%token <ival> tINT
-%token <fval> tFLOAT
-%token <sval> tSTRING
+%token <ival> tINTVAL
+%token <fval> tFLOATVAL
+%token <sval> tSTRINGVAL
+
+%type <exp> exp
 
 %start prog
 
@@ -76,19 +87,19 @@ stmts:
     ;
 
 dcl:
-    tVAR tIDENTIFIER tCOLON tFLOAT_TYPE tSEMICOLON
+    tVAR tIDENTIFIER tCOLON tFLOAT tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found a float declaration: %s\n", $2);
             #endif
         }
-    | tVAR tIDENTIFIER tCOLON tINT_TYPE tSEMICOLON
+    | tVAR tIDENTIFIER tCOLON tINT tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found an int declaration: %s\n", $2);
             #endif
         }
-    | tVAR tIDENTIFIER tCOLON tSTRING_TYPE tSEMICOLON
+    | tVAR tIDENTIFIER tCOLON tSTRING tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found a string declaration: %s\n", $2);
@@ -101,7 +112,7 @@ stmt:
     ;
 
 assignment:
-    tIDENTIFIER tASSIGN expr tSEMICOLON
+    tIDENTIFIER tASSIGN exp tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found an assignment\n");
@@ -116,7 +127,7 @@ funccall:
                 printf("found a call to read\n");
             #endif
         }
-    | tPRINT expr tSEMICOLON
+    | tPRINT exp tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found a call to print\n");
@@ -124,46 +135,66 @@ funccall:
         }
     ;
 
-expr:
+exp:
       tIDENTIFIER
-    | tFLOAT
-    | tINT
-    | tSTRING
-    | tLPAREN expr tRPAREN
-    | expr tPLUS expr
+        {
+            $$ = makeEXPid($1);
+        }
+    | tFLOATVAL
+        {
+            $$ = makeEXPfloatval($1);
+        }
+    | tINTVAL
+        {
+            $$ = makeEXPintval($1);
+        }
+    | tSTRINGVAL
+        {
+            $$ = makeEXPstringval($1);
+        }
+    | tLPAREN exp tRPAREN
+        {
+            $$ = $2;
+        }
+    | exp tPLUS exp
         {
             #ifdef BISON_DEBUG
                 printf("found an addition\n");
             #endif
+            $$ = makeEXPplus($1, $3);
         }
-    | expr tMINUS expr
+    | exp tMINUS exp
         {
             #ifdef BISON_DEBUG
                 printf("found a subtraction\n");
             #endif
+            $$ = makeEXPminus($1, $3);
         }
-    | expr tTIMES expr
+    | exp tTIMES exp
         {
             #ifdef BISON_DEBUG
                 printf("found a multiplication\n");
             #endif
+            $$ = makeEXPtimes($1, $3);
         }
-    | expr tDIVIDE expr
+    | exp tDIVIDE exp
         {
             #ifdef BISON_DEBUG
                 printf("found a division\n");
             #endif
+            $$ = makeEXPdiv($1, $3);
         }
-    | tMINUS expr %prec UMINUS
+    | tMINUS exp %prec UMINUS
         {
             #ifdef BISON_DEBUG
                 printf("found a unary minus\n");
             #endif
+            $$ = makeEXPunaryminus($2);
         }
     ;
 
 whileloop:
-    tWHILE expr tDO stmts tDONE
+    tWHILE exp tDO stmts tDONE
     ;
 
 condblock:
@@ -171,7 +202,7 @@ condblock:
     ;
 
 ifblock:
-    tIF expr tTHEN stmts
+    tIF exp tTHEN stmts
     ;
 
 elseblock:

@@ -1,12 +1,13 @@
 CC = gcc
 
-CFLAGS = -Wall -ansi -pedantic
-
 # target: dependencies
 # [tab] system command
 
 all: y.tab.c lex.yy.c
 	$(CC) lex.yy.c y.tab.c -o out -ll
+
+main: y.tab.o lex.yy.o main.o tree.h tree.o pretty.h pretty.o eval.h eval.o memory.h memory.o
+	$(CC) lex.yy.o y.tab.o tree.o pretty.o eval.o memory.o main.o -o tiny -ll
 
 bison_debug: y.tab.c lex.yy.c
 	$(CC) lex.yy.c y.tab.c -D BISON_DEBUG -o out -ll
@@ -27,4 +28,6 @@ check:
 	./check
 
 clean:
-	rm y.tab.* lex.yy.*; rm scanner; rm out; rm flex
+	rm y.tab.* lex.yy.*; rm *.o; rm scanner; rm out; rm flex; rm result
+
+## END

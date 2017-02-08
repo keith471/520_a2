@@ -1,0 +1,8 @@
+var weight: float;
+
+weight = 180.2;
+
+// the expression in an if must be an integer
+if weight then
+    // nothing
+endif
