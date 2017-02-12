@@ -2,6 +2,8 @@
 #include "tree.h"
 #include "pretty.h"
 #include "symbol.h"
+#include "error.h"
+#include "type.h"
 
 void yyparse();
 
@@ -17,5 +19,9 @@ int main() {
     printf("\n");
     // make a symbol table for the program
     symPROGRAM(theprogram);
+    terminateIfErrors();
+    // type check the program
+    typePROGRAM(theprogram);
+    terminateIfErrors();
     return(0);
 }

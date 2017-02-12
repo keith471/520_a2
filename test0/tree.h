@@ -122,6 +122,8 @@ typedef struct ID {
  */
 typedef struct EXP {
     int lineno;
+    // the type that this expression evaluates to
+    struct TYPE* type;
     // the kind of this expression
     enum { idK, intvalK, floatvalK, stringvalK, timesK, divK, plusK, minusK, uminusK } kind;
     // this expression is one of the following types

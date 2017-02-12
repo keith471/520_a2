@@ -1,12 +1,8 @@
 # TODOS
 
-- add appropriate error handling to symbol table
-    - then test!!!
-- should probably add type to SYMBOL
+- add an easier way to test the program (feed programs in from file, as an option)
+- test out type checking and symbol table
+- print symbol table to file
+- code generation!
 
 - check if there are any additional things we need to support in the language
-
-
-
-- symbol table probably only needs two columns: identifier and type, since we declare everything at once
-- should use to ensure that variables aren't declared more than once
