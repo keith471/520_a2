@@ -23,6 +23,5 @@ void symEXP(EXP* exp, SymbolTable* symbolTable);
 void symFUNCTIONCALL(FUNCTIONCALL* fc, SymbolTable* symbolTable);
 
 // for printing symbol table to file
-char* printSymbolTableToFile(char* programName);
+void printSymbolTableToFile(char* fname);
 char* getTypeAsString(TYPE* type);
-char* concat(const char *s1, const char *s2);

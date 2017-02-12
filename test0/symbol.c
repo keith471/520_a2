@@ -5,42 +5,7 @@
 #include "symbol.h"
 #include "error.h"
 
-/*
- * Concatenate two strings and return the result
- */
-char* concat(const char *s1, const char *s2) {
-    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the null-terminator
-    // should check for malloc errors here
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
-char* printSymbolTableToFile(char* programName) {
-    int dotIndex = -1;
-    int i;
-    // get the index of the '.' in the name of the program file
-    for (i = 0; i < strlen(programName); i++) {
-        if (programName[i] == '.') {
-            dotIndex = i;
-            break;
-        }
-    }
-
-    // create the name of the file where we will print the symbol table
-    char partOne[100];
-    char* fname;
-    if (dotIndex != -1) {
-        strncpy(partOne, programName, i);
-        partOne[i] = '\0';
-    } else {
-        // file name does not contain a '.'
-        // we proceed anyway
-        strncpy(partOne, programName, strlen(programName));
-    }
-    fname = concat(partOne, ".symbol.txt");
-
-    // print the symbol table to the file
+void printSymbolTableToFile(char* fname) {
     FILE *file = fopen(fname, "w");
 
     // print headers
@@ -48,6 +13,7 @@ char* printSymbolTableToFile(char* programName) {
 
     // print symbols and types
     SYMBOL* s;
+    int i;
     for (i = 0; i < HashSize; i++) {
         s = symbolTable->table[i];
         while (s != NULL) {
@@ -57,8 +23,6 @@ char* printSymbolTableToFile(char* programName) {
     }
 
     fclose(file);
-
-    return fname;
 }
 
 char* getTypeAsString(TYPE* type) {

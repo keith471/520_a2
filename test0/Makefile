@@ -6,8 +6,8 @@ CC = gcc
 all: y.tab.c lex.yy.c
 	$(CC) lex.yy.c y.tab.c -o out -ll
 
-main: y.tab.o lex.yy.o main.o tree.h tree.o pretty.h pretty.o memory.h memory.o symbol.h symbol.o error.h error.o type.h type.o
-	$(CC) lex.yy.o y.tab.o tree.o pretty.o memory.o symbol.o error.o type.o main.o -o out -ll
+main: y.tab.o lex.yy.o main.o tree.h tree.o pretty.h pretty.o memory.h memory.o symbol.h symbol.o error.h error.o type.h type.o codegen.h codegen.o
+	$(CC) lex.yy.o y.tab.o tree.o pretty.o memory.o symbol.o error.o type.o codegen.o main.o -o out -ll
 
 bison_debug: y.tab.c lex.yy.c
 	$(CC) lex.yy.c y.tab.c -D BISON_DEBUG -o out -ll
