@@ -3,22 +3,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "error.h"
+
 // AST stuff
 #include "tree.h"
 
-// Stuff from flex that bison needs to know about
+// bison complains if this is not here for some reason
 extern int yylex();
-extern int yyparse();
-extern FILE* yyin;
-extern int yylineno;
-extern char* yytext;
 
-// AST stuff
-//extern EXP* theexpression;
-
+// more AST stuff
 // this is the root of the AST!
 // defined in main, but created here
 extern PROGRAM* theprogram;
+
 /*
 Can probs do something like this:
 extern PROGRAM* theprogram;
@@ -26,8 +23,6 @@ Paired with the following below:
 prog: exp { theprogram = $$; }
 */
 
-// called if there is a syntax or parsing error
-void yyerror(const char *s);
 %}
 
 %union {
@@ -117,7 +112,7 @@ statements:
             #ifdef BISON_DEBUG
                 printf("found the statements\n");
             #endif
-            $$ = makeSTATEMENTsequence($1, $2);
+            $$ = appendSTATEMENT($1, $2);
         }
     ;
 
@@ -275,11 +270,4 @@ exp:
 
 %%
 
-void yyerror(const char *s) {
-    #ifdef BISON_DEBUG
-    	printf("YIKES, parse error on line %d, before %s. Message: %s\n", yylineno, yytext, s);
-    #endif
-    printf("INVALID\n");
-	// exit on parse error
-	exit(1);
-}
+// nothing to go here

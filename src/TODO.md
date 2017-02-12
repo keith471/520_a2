@@ -1,9 +1,12 @@
 # TODOS
 
-- Try pretty printing declaration stuff :) Make sure it is working!
-    - add more pretty printing functionality!
-    - start with `prettyPROGRAM(PROGRAM *prog)` and go from there
+- add appropriate error handling to symbol table
+    - then test!!!
+- should probably add type to SYMBOL
 
-- I must be creating the declaration linked list in the wrong order. Reverse this!
+- check if there are any additional things we need to support in the language
 
-- then, continue to add more nodes to handle statements
+
+
+- symbol table probably only needs two columns: identifier and type, since we declare everything at once
+- should use to ensure that variables aren't declared more than once

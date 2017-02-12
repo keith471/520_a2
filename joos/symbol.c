@@ -64,6 +64,9 @@ SYMBOL *getSymbol(SymbolTable *t, char *name)
   return getSymbol(t->next,name);
 }
 
+/*
+ * Checks if a symbol is already defined
+ */
 int defSymbol(SymbolTable *t, char *name)
 { int i = Hash(name);
   SYMBOL *s;

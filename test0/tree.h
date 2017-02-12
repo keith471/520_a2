@@ -44,6 +44,17 @@ typedef struct PROGRAM {
 } PROGRAM;
 
 /*
+ * Symbol
+ */
+typedef struct SYMBOL {
+    char *name;
+    struct TYPE* type;
+    // this is a linked list in the SymbolTable hashmap, so we have to have this next field.
+    // it doesn't actually have anything to do with the 'current' symbol
+    struct SYMBOL *next;
+} SYMBOL;
+
+/*
  * Type
  */
 typedef struct TYPE {
@@ -64,28 +75,25 @@ typedef struct DECLARATION {
 /*
  * a statement
  */
-typedef struct STATEMENT {
-    int lineno;
-    enum {sequenceK, assignK, funccallK, ifK, ifelseK, whileK} kind;
-    union{
-        struct FUNCTIONCALL *fcall;
-        struct {struct ID *id;
-                //SYMBOL *leftsym; /* symbol */
-                struct EXP *exp;} assignS;
-        struct {struct STATEMENT *first;
-                struct STATEMENT *second;} sequenceS;
-        struct {struct EXP *condition;
-                struct STATEMENT *body;
-                int stoplabel; /* resource */} ifS;
-        struct {struct EXP *condition;
-                struct STATEMENT *thenpart;
-                struct STATEMENT *elsepart;
-                int elselabel,stoplabel; /* resource */} ifelseS;
-        struct {struct EXP *condition;
-                struct STATEMENT *body;
-                /*int startlabel, stoplabel;*/ /* resource */} whileS;
-    } val;
-} STATEMENT;
+ typedef struct STATEMENT {
+     int lineno;
+     enum {assignK, fcallK, ifK, ifelseK, whileK} kind;
+     // points to the next statement at the same level as this one
+     // nested statements are pointed to by the appropriate statement structs in val
+     struct STATEMENT* next;
+     union{
+         struct FUNCTIONCALL *fcallS;
+         struct {struct ID *id;
+                 struct EXP *exp;} assignS;
+         struct {struct EXP *condition;
+                 struct STATEMENT *body;} ifS;
+         struct {struct EXP *condition;
+                 struct STATEMENT *thenpart;
+                 struct STATEMENT *elsepart;} ifelseS;
+         struct {struct EXP *condition;
+                 struct STATEMENT *body;} whileS;
+     } val;
+ } STATEMENT;
 
 /*
  * Function call (read or print)
@@ -102,9 +110,11 @@ typedef struct FUNCTIONCALL {
 
 /*
  * identifier
+ * every identifier is associated with a SYMBOL
  */
 typedef struct ID {
     char *name;
+    struct SYMBOL* symbol;
 } ID;
 
 /*
@@ -137,6 +147,7 @@ PROGRAM* makePROGRAM(DECLARATION* declarations, STATEMENT* statements);
 DECLARATION *appendDECLARATION(DECLARATION *f, DECLARATION *g);
 DECLARATION *makeDECLARATION(ID *id, TYPE *type);
 
+STATEMENT *appendSTATEMENT(STATEMENT* prevs, STATEMENT *curr);
 STATEMENT *makeSTATEMENTsequence(STATEMENT *first, STATEMENT *second);
 STATEMENT *makeSTATEMENTassign(ID *id, EXP *exp);
 STATEMENT *makeSTATEMENTfunccall(FUNCTIONCALL* fc);

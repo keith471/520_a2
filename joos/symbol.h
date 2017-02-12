@@ -21,6 +21,7 @@ typedef struct SymbolTable {
 
 SymbolTable *initSymbolTable();
 
+/* detect multiple definitions of an identifier at the same level */
 SymbolTable *scopeSymbolTable(SymbolTable *t);
 
 SYMBOL *putSymbol(SymbolTable *t, char *name, SymbolKind kind);

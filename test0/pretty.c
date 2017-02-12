@@ -45,20 +45,14 @@ void prettyDECLARATION(DECLARATION *d) {
 void prettySTATEMENT(STATEMENT *s, int level) {
     // if null, stop, else print and recurse
     if (s == NULL) {
-        printf("the statement is null\n");
         return;
     }
     switch (s->kind) {
-        case sequenceK:
-            //printTabs(level);
-            //printf("sequence statement\n");
-            prettySTATEMENTsequence(s, level);
-            break;
         case assignK:
             //printf("assignment statement\n");
             prettySTATEMENTassign(s, level);
             break;
-        case funccallK:
+        case fcallK:
             //printf("function call statement\n");
             prettySTATEMENTfunccall(s, level);
             break;
@@ -75,13 +69,17 @@ void prettySTATEMENT(STATEMENT *s, int level) {
             prettySTATEMENTwhile(s, level);
             break;
     }
+    // print the next statement
+    prettySTATEMENT(s->next, level);
 }
 
+/*
 void prettySTATEMENTsequence(STATEMENT* s, int level) {
     // print the first statement and then the second
     prettySTATEMENT(s->val.sequenceS.first, level);
     prettySTATEMENT(s->val.sequenceS.second, level);
 }
+*/
 
 void prettySTATEMENTassign(STATEMENT* s, int level) {
     printTabs(level);
@@ -92,7 +90,7 @@ void prettySTATEMENTassign(STATEMENT* s, int level) {
 }
 
 void prettySTATEMENTfunccall(STATEMENT* s, int level) {
-    FUNCTIONCALL* fc = s->val.fcall;
+    FUNCTIONCALL* fc = s->val.fcallS;
     printTabs(level);
     switch (fc->kind) {
         case readK:

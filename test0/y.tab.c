@@ -68,22 +68,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "error.h"
+
 // AST stuff
 #include "tree.h"
 
-// Stuff from flex that bison needs to know about
+// bison complains if this is not here for some reason
 extern int yylex();
-extern int yyparse();
-extern FILE* yyin;
-extern int yylineno;
-extern char* yytext;
 
-// AST stuff
-//extern EXP* theexpression;
-
+// more AST stuff
 // this is the root of the AST!
 // defined in main, but created here
 extern PROGRAM* theprogram;
+
 /*
 Can probs do something like this:
 extern PROGRAM* theprogram;
@@ -91,10 +88,8 @@ Paired with the following below:
 prog: exp { theprogram = $$; }
 */
 
-// called if there is a syntax or parsing error
-void yyerror(const char *s);
 
-#line 98 "y.tab.c" /* yacc.c:339  */
+#line 93 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -192,7 +187,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 33 "parser.y" /* yacc.c:355  */
+#line 28 "parser.y" /* yacc.c:355  */
 
 	int ival;
 	float fval;
@@ -204,7 +199,7 @@ union YYSTYPE
     struct ID* id;
     struct FUNCTIONCALL* functioncall;
 
-#line 208 "y.tab.c" /* yacc.c:355  */
+#line 203 "y.tab.c" /* yacc.c:355  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -219,7 +214,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 223 "y.tab.c" /* yacc.c:358  */
+#line 218 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -500,10 +495,10 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    90,    90,   101,   102,   114,   115,   125,   135,   142,
-     149,   159,   161,   163,   165,   167,   172,   182,   189,   199,
-     204,   209,   214,   219,   223,   227,   231,   235,   239,   246,
-     253,   260,   267
+       0,    85,    85,    96,    97,   109,   110,   120,   130,   137,
+     144,   154,   156,   158,   160,   162,   167,   177,   184,   194,
+     199,   204,   209,   214,   218,   222,   226,   230,   234,   241,
+     248,   255,   262
 };
 #endif
 
@@ -1321,24 +1316,24 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 91 "parser.y" /* yacc.c:1661  */
+#line 86 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("done with a MiniLang file!\n");
             #endif
             theprogram = makePROGRAM((yyvsp[-1].declaration), (yyvsp[0].statement));
         }
-#line 1332 "y.tab.c" /* yacc.c:1661  */
+#line 1327 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 3:
-#line 101 "parser.y" /* yacc.c:1661  */
+#line 96 "parser.y" /* yacc.c:1661  */
     { (yyval.declaration) = NULL; }
-#line 1338 "y.tab.c" /* yacc.c:1661  */
+#line 1333 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 4:
-#line 103 "parser.y" /* yacc.c:1661  */
+#line 98 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found the declarations\n");
@@ -1346,254 +1341,254 @@ yyreduce:
             //$$ = appendDECLARATION($2, $1);
             (yyval.declaration) = appendDECLARATION((yyvsp[-1].declaration), (yyvsp[0].declaration));
         }
-#line 1350 "y.tab.c" /* yacc.c:1661  */
+#line 1345 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 5:
-#line 114 "parser.y" /* yacc.c:1661  */
+#line 109 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = NULL; }
-#line 1356 "y.tab.c" /* yacc.c:1661  */
+#line 1351 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 6:
-#line 116 "parser.y" /* yacc.c:1661  */
+#line 111 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found the statements\n");
             #endif
-            (yyval.statement) = makeSTATEMENTsequence((yyvsp[-1].statement), (yyvsp[0].statement));
+            (yyval.statement) = appendSTATEMENT((yyvsp[-1].statement), (yyvsp[0].statement));
         }
-#line 1367 "y.tab.c" /* yacc.c:1661  */
+#line 1362 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 126 "parser.y" /* yacc.c:1661  */
+#line 121 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a declaration: %s\n", (yyvsp[-3].id));
             #endif
             (yyval.declaration) = makeDECLARATION((yyvsp[-3].id), (yyvsp[-1].type));
         }
-#line 1378 "y.tab.c" /* yacc.c:1661  */
+#line 1373 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 8:
-#line 136 "parser.y" /* yacc.c:1661  */
+#line 131 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("int declaration\n");
             #endif
             (yyval.type) = makeTYPEint();
         }
-#line 1389 "y.tab.c" /* yacc.c:1661  */
+#line 1384 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 9:
-#line 143 "parser.y" /* yacc.c:1661  */
+#line 138 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("float declaration\n");
             #endif
             (yyval.type) = makeTYPEfloat();
         }
-#line 1400 "y.tab.c" /* yacc.c:1661  */
+#line 1395 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 150 "parser.y" /* yacc.c:1661  */
+#line 145 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("string declaration\n");
             #endif
             (yyval.type) = makeTYPEstring();
         }
-#line 1411 "y.tab.c" /* yacc.c:1661  */
+#line 1406 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 160 "parser.y" /* yacc.c:1661  */
+#line 155 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = (yyvsp[0].statement); }
-#line 1417 "y.tab.c" /* yacc.c:1661  */
+#line 1412 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 12:
-#line 162 "parser.y" /* yacc.c:1661  */
+#line 157 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = makeSTATEMENTfunccall((yyvsp[0].functioncall)); }
-#line 1423 "y.tab.c" /* yacc.c:1661  */
+#line 1418 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 13:
-#line 164 "parser.y" /* yacc.c:1661  */
+#line 159 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = (yyvsp[0].statement); }
-#line 1429 "y.tab.c" /* yacc.c:1661  */
+#line 1424 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 14:
-#line 166 "parser.y" /* yacc.c:1661  */
+#line 161 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = (yyvsp[0].statement); }
-#line 1435 "y.tab.c" /* yacc.c:1661  */
+#line 1430 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 15:
-#line 168 "parser.y" /* yacc.c:1661  */
+#line 163 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = (yyvsp[0].statement); }
-#line 1441 "y.tab.c" /* yacc.c:1661  */
+#line 1436 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 16:
-#line 173 "parser.y" /* yacc.c:1661  */
+#line 168 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found an assignment\n");
             #endif
             (yyval.statement) = makeSTATEMENTassign((yyvsp[-3].id), (yyvsp[-1].exp));
         }
-#line 1452 "y.tab.c" /* yacc.c:1661  */
+#line 1447 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 17:
-#line 183 "parser.y" /* yacc.c:1661  */
+#line 178 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a call to read\n");
             #endif
             (yyval.functioncall) = makeFUNCTIONCALLread((yyvsp[-1].id));
         }
-#line 1463 "y.tab.c" /* yacc.c:1661  */
+#line 1458 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 18:
-#line 190 "parser.y" /* yacc.c:1661  */
+#line 185 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a call to print\n");
             #endif
             (yyval.functioncall) = makeFUNCTIONCALLprint((yyvsp[-1].exp));
         }
-#line 1474 "y.tab.c" /* yacc.c:1661  */
+#line 1469 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 19:
-#line 200 "parser.y" /* yacc.c:1661  */
+#line 195 "parser.y" /* yacc.c:1661  */
     { (yyval.id) = makeID((yyvsp[0].sval)); }
-#line 1480 "y.tab.c" /* yacc.c:1661  */
+#line 1475 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 20:
-#line 205 "parser.y" /* yacc.c:1661  */
+#line 200 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = makeSTATEMENTwhile((yyvsp[-3].exp), (yyvsp[-1].statement)); }
-#line 1486 "y.tab.c" /* yacc.c:1661  */
+#line 1481 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 21:
-#line 210 "parser.y" /* yacc.c:1661  */
+#line 205 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = makeSTATEMENTif((yyvsp[-3].exp), (yyvsp[-1].statement)); }
-#line 1492 "y.tab.c" /* yacc.c:1661  */
+#line 1487 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 22:
-#line 215 "parser.y" /* yacc.c:1661  */
+#line 210 "parser.y" /* yacc.c:1661  */
     { (yyval.statement) = makeSTATEMENTifelse((yyvsp[-5].exp), (yyvsp[-3].statement), (yyvsp[-1].statement)); }
-#line 1498 "y.tab.c" /* yacc.c:1661  */
+#line 1493 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 23:
-#line 220 "parser.y" /* yacc.c:1661  */
+#line 215 "parser.y" /* yacc.c:1661  */
     {
             (yyval.exp) = makeEXPid((yyvsp[0].id));
         }
-#line 1506 "y.tab.c" /* yacc.c:1661  */
+#line 1501 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 24:
-#line 224 "parser.y" /* yacc.c:1661  */
+#line 219 "parser.y" /* yacc.c:1661  */
     {
             (yyval.exp) = makeEXPfloatval((yyvsp[0].fval));
         }
-#line 1514 "y.tab.c" /* yacc.c:1661  */
+#line 1509 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 25:
-#line 228 "parser.y" /* yacc.c:1661  */
+#line 223 "parser.y" /* yacc.c:1661  */
     {
             (yyval.exp) = makeEXPintval((yyvsp[0].ival));
         }
-#line 1522 "y.tab.c" /* yacc.c:1661  */
+#line 1517 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 26:
-#line 232 "parser.y" /* yacc.c:1661  */
+#line 227 "parser.y" /* yacc.c:1661  */
     {
             (yyval.exp) = makeEXPstringval((yyvsp[0].sval));
         }
-#line 1530 "y.tab.c" /* yacc.c:1661  */
+#line 1525 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 27:
-#line 236 "parser.y" /* yacc.c:1661  */
+#line 231 "parser.y" /* yacc.c:1661  */
     {
             (yyval.exp) = (yyvsp[-1].exp);
         }
-#line 1538 "y.tab.c" /* yacc.c:1661  */
+#line 1533 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 28:
-#line 240 "parser.y" /* yacc.c:1661  */
+#line 235 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found an addition\n");
             #endif
             (yyval.exp) = makeEXPplus((yyvsp[-2].exp), (yyvsp[0].exp));
         }
-#line 1549 "y.tab.c" /* yacc.c:1661  */
+#line 1544 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 29:
-#line 247 "parser.y" /* yacc.c:1661  */
+#line 242 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a subtraction\n");
             #endif
             (yyval.exp) = makeEXPminus((yyvsp[-2].exp), (yyvsp[0].exp));
         }
-#line 1560 "y.tab.c" /* yacc.c:1661  */
+#line 1555 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 30:
-#line 254 "parser.y" /* yacc.c:1661  */
+#line 249 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a multiplication\n");
             #endif
             (yyval.exp) = makeEXPtimes((yyvsp[-2].exp), (yyvsp[0].exp));
         }
-#line 1571 "y.tab.c" /* yacc.c:1661  */
+#line 1566 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 31:
-#line 261 "parser.y" /* yacc.c:1661  */
+#line 256 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a division\n");
             #endif
             (yyval.exp) = makeEXPdiv((yyvsp[-2].exp), (yyvsp[0].exp));
         }
-#line 1582 "y.tab.c" /* yacc.c:1661  */
+#line 1577 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 32:
-#line 268 "parser.y" /* yacc.c:1661  */
+#line 263 "parser.y" /* yacc.c:1661  */
     {
             #ifdef BISON_DEBUG
                 printf("found a unary minus\n");
             #endif
             (yyval.exp) = makeEXPunaryminus((yyvsp[0].exp));
         }
-#line 1593 "y.tab.c" /* yacc.c:1661  */
+#line 1588 "y.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 1597 "y.tab.c" /* yacc.c:1661  */
+#line 1592 "y.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1821,14 +1816,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 276 "parser.y" /* yacc.c:1906  */
+#line 271 "parser.y" /* yacc.c:1906  */
 
 
-void yyerror(const char *s) {
-    #ifdef BISON_DEBUG
-    	printf("YIKES, parse error on line %d, before %s. Message: %s\n", yylineno, yytext, s);
-    #endif
-    printf("INVALID\n");
-	// exit on parse error
-	exit(1);
-}
+// nothing to go here

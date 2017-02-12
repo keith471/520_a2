@@ -80,9 +80,19 @@ DECLARATION *makeDECLARATION(ID *id, TYPE *type) {
     return d;
 }
 
+STATEMENT *appendSTATEMENT(STATEMENT* prevs, STATEMENT *curr) {
+    STATEMENT* t;
+    if (prevs == NULL) return curr;
+    t = prevs;
+    while (t->next != NULL) t = t->next;
+    t->next = curr;
+    return prevs;
+}
+
 /*
  * Sequence of statements ---???? QUESTION: What is a sequence statement? Why do we need first and second?
  */
+/*
 STATEMENT *makeSTATEMENTsequence(STATEMENT *first, STATEMENT *second) {
     STATEMENT *s;
     if (first == NULL) return second;
@@ -94,12 +104,14 @@ STATEMENT *makeSTATEMENTsequence(STATEMENT *first, STATEMENT *second) {
     s->val.sequenceS.second = second;
     return s;
 }
+*/
 
 STATEMENT *makeSTATEMENTassign(ID *id, EXP *exp) {
     STATEMENT *s;
     s = NEW(STATEMENT);
     s->lineno = yylineno;
     s->kind = assignK;
+    s->next = NULL;
     s->val.assignS.id = id;
     s->val.assignS.exp = exp;
     return s;
@@ -109,8 +121,8 @@ STATEMENT *makeSTATEMENTfunccall(FUNCTIONCALL* fc) {
     STATEMENT *s;
     s = NEW(STATEMENT);
     s->lineno = yylineno;
-    s->kind = funccallK;
-    s->val.fcall = fc;
+    s->kind = fcallK;
+    s->val.fcallS = fc;
     return s;
 }
 
@@ -137,6 +149,7 @@ STATEMENT *makeSTATEMENTwhile(EXP* condition, STATEMENT* body) {
     s = NEW(STATEMENT);
     s->lineno = yylineno;
     s->kind = whileK;
+    s->next = NULL;
     s->val.whileS.condition = condition;
     s->val.whileS.body = body;
     return s;
@@ -147,6 +160,7 @@ STATEMENT *makeSTATEMENTif(EXP *condition, STATEMENT *body) {
     s = NEW(STATEMENT);
     s->lineno = yylineno;
     s->kind = ifK;
+    s->next = NULL;
     s->val.ifS.condition = condition;
     s->val.ifS.body = body;
     return s;
@@ -157,6 +171,7 @@ STATEMENT *makeSTATEMENTifelse(EXP *condition, STATEMENT *thenpart, STATEMENT *e
     s = NEW(STATEMENT);
     s->lineno = yylineno;
     s->kind = ifelseK;
+    s->next = NULL;
     s->val.ifelseS.condition = condition;
     s->val.ifelseS.thenpart = thenpart;
     s->val.ifelseS.elsepart = elsepart;
