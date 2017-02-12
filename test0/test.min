@@ -1,0 +1,7 @@
+var name: string;
+var age: int;
+var height: float;
+
+name = "keith";
+age = 23;
+height = 6.2;

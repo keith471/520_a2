@@ -21,3 +21,8 @@ void symDECLARATIONS(DECLARATION* declarations, SymbolTable* symbolTable);
 void symSTATEMENTS(STATEMENT* statements, SymbolTable* symbolTable);
 void symEXP(EXP* exp, SymbolTable* symbolTable);
 void symFUNCTIONCALL(FUNCTIONCALL* fc, SymbolTable* symbolTable);
+
+// for printing symbol table to file
+char* printSymbolTableToFile(char* programName);
+char* getTypeAsString(TYPE* type);
+char* concat(const char *s1, const char *s2);

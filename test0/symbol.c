@@ -1,8 +1,77 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "memory.h"
 #include "symbol.h"
 #include "error.h"
+
+/*
+ * Concatenate two strings and return the result
+ */
+char* concat(const char *s1, const char *s2) {
+    char *result = malloc(strlen(s1)+strlen(s2)+1);//+1 for the null-terminator
+    // should check for malloc errors here
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+}
+
+char* printSymbolTableToFile(char* programName) {
+    int dotIndex = -1;
+    int i;
+    // get the index of the '.' in the name of the program file
+    for (i = 0; i < strlen(programName); i++) {
+        if (programName[i] == '.') {
+            dotIndex = i;
+            break;
+        }
+    }
+
+    // create the name of the file where we will print the symbol table
+    char partOne[100];
+    char* fname;
+    if (dotIndex != -1) {
+        strncpy(partOne, programName, i);
+        partOne[i] = '\0';
+    } else {
+        // file name does not contain a '.'
+        // we proceed anyway
+        strncpy(partOne, programName, strlen(programName));
+    }
+    fname = concat(partOne, ".symbol.txt");
+
+    // print the symbol table to the file
+    FILE *file = fopen(fname, "w");
+
+    // print headers
+    fprintf(file, "symbol\ttype\n");
+
+    // print symbols and types
+    SYMBOL* s;
+    for (i = 0; i < HashSize; i++) {
+        s = symbolTable->table[i];
+        while (s != NULL) {
+            fprintf(file, "%s\t%s\n", s->name, getTypeAsString(s->type));
+            s = s->next;
+        }
+    }
+
+    fclose(file);
+
+    return fname;
+}
+
+char* getTypeAsString(TYPE* type) {
+    switch (type->kind) {
+        case intK:
+            return "int";
+        case floatK:
+            return "float";
+        case stringK:
+            return "string";
+    }
+    return "";
+}
 
 /*
  * Hash an identifier into an index

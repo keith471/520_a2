@@ -1,0 +1,4 @@
+symbol	type
+name	string
+age	int
+height	float
