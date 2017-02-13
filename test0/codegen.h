@@ -13,6 +13,3 @@ void genSTATEMENTif(STATEMENT* s, int level, FILE* emitFILE);
 void genSTATEMENTifelse(STATEMENT* s, int level, FILE* emitFILE);
 void genSTATEMENTwhile(STATEMENT* s, int level, FILE* emitFILE);
 void genEXP(EXP* exp, FILE* emitFILE);
-
-void printTabsToFile(int n, FILE* emitFILE);
-void newLineInFile(FILE* emitFILE);

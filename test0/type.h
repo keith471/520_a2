@@ -3,6 +3,8 @@
 void initTypes();
 void checkAssignment(TYPE *left, TYPE *right, int lineno);
 void checkCondition(TYPE *t, int lineno);
+void setStringMult(EXP* exp, TYPE *left, TYPE *right);
+void setStringAddition(EXP* exp, TYPE *left, TYPE *right);
 
 void typePROGRAM(PROGRAM *p);
 void typeSTATEMENT(STATEMENT* statement);

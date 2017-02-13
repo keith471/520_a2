@@ -133,9 +133,14 @@ typedef struct EXP {
         int intvalE;  // value of integer
         float floatvalE;    // value of float
         char *stringvalE;   // value of string
-        struct {struct EXP *left; struct EXP *right;} timesE;
+        struct {struct EXP *left;
+                struct EXP *right;
+                int stringMultForward; /* 1 if string * int */
+                int stringMultReverse; /* 1 if int * string */} timesE;
+        struct {struct EXP *left;
+                struct EXP *right;
+                int stringAddition; /* 1 if string addition */} plusE;
         struct {struct EXP *left; struct EXP *right;} divE;
-        struct {struct EXP *left; struct EXP *right;} plusE;
         struct {struct EXP *left; struct EXP *right;} minusE;
         struct EXP *uminusE;    // the expression following the unary minus
     } val;

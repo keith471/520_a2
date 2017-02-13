@@ -279,6 +279,8 @@ EXP *makeEXPtimes(EXP *left, EXP *right) {
     e->kind = timesK;
     e->val.timesE.left = left;
     e->val.timesE.right = right;
+    e->val.timesE.stringMultForward = 0;   /* set to false for now; if true, will be set in type checking stage */
+    e->val.timesE.stringMultReverse = 0;   /* set to false for now; if true, will be set in type checking stage */
     return e;
 }
 
@@ -305,6 +307,7 @@ EXP *makeEXPplus(EXP *left, EXP *right) {
     e->kind = plusK;
     e->val.plusE.left = left;
     e->val.plusE.right = right;
+    e->val.plusE.stringAddition = 0; /* set to false for now; if true, will be set in type checking stage */
     return e;
 }
 

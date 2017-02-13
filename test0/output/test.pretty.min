@@ -6,6 +6,5 @@ var beans: string;
 
 name = "keith";
 age = 23;
-height = 6.2;
-
-print name * 3;
+height = 6.200000;
+print (name*3);

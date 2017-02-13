@@ -14,6 +14,8 @@ PROGRAM *theprogram;
 
 extern FILE* yyin;
 
+char* outputPath = "./output/";
+
 /*
  * concatenate two strings and return the result
  */
@@ -56,6 +58,7 @@ int main(int argc, char* argv[]) {
 
     char* programFilename = "default.min";
     char* programName;
+    char* prettyFilename;
     char* symbolTableFilename;
     char* cFilename;
 
@@ -83,26 +86,30 @@ int main(int argc, char* argv[]) {
 
     programName = getProgramName(programFilename);
 
-    printf("\n---------------------------------\n");
-    printf("Pretty printed program:");
-    printf("\n_________________________________\n");
     // pretty print the program
-    prettyPROGRAM(theprogram);
-    printf("\n==================================================================\n");
+    printf("pretty printing program...\n");
+    prettyFilename = concat(outputPath, concat(programName, ".pretty.min"));
+    prettyPROGRAM(theprogram, prettyFilename);
+    printf(">>> pretty printed program to %s\n", prettyFilename);
+
     // make a symbol table for the program
     printf("making a symbol table...\n");
     symPROGRAM(theprogram);
-    symbolTableFilename = concat(programName, ".symbol.txt");
+    symbolTableFilename = concat(outputPath, concat(programName, ".symbol.txt"));
     printSymbolTableToFile(symbolTableFilename);
-    printf("    wrote the symbol table to %s\n", symbolTableFilename);
+    printf(">>> wrote the symbol table to %s\n", symbolTableFilename);
     terminateIfErrors();
+
     // type check the program
     printf("type checking the program...\n");
     typePROGRAM(theprogram);
     terminateIfErrors();
+
+    // generate c code!
     printf("generating c code...\n");
-    cFilename = concat(programName, ".c");
+    cFilename = concat(outputPath, concat(programName, ".c"));
     genPROGRAM(theprogram, cFilename);
-    printf("\nSuccessfully compiled the program as %s\n", cFilename);
+    printf(">>> successfully compiled the program as %s\n", cFilename);
+
     return(0);
 }

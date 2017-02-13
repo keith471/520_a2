@@ -4,36 +4,39 @@
 
 #include <stdio.h>
 #include "pretty.h"
+#include "outputhelpers.h"
 
 // the number of times to indent before printing
 int numIndents = 0;
 
-void prettyPROGRAM(PROGRAM *p) {
-    prettyDECLARATION(p->declarations);
-    newLine();
-    prettySTATEMENT(p->statements, 0);
+void prettyPROGRAM(PROGRAM *p, char* fname) {
+    FILE* emitFILE = fopen(fname, "w");
+    prettyDECLARATION(p->declarations, emitFILE);
+    newLineInFile(emitFILE);
+    prettySTATEMENT(p->statements, 0, emitFILE);
+    fclose(emitFILE);
 }
 
 /*
  * pretty print a declaration
  */
-void prettyDECLARATION(DECLARATION *d) {
+void prettyDECLARATION(DECLARATION *d, FILE* emitFILE) {
     // if null, stop, else print and then recurse on d->next
     if (d == NULL) return;
-    printf("var %s: ", d->id->name);
+    fprintf(emitFILE, "var %s: ", d->id->name);
     switch (d->type->kind) {
         case intK:
-            printf("int;");
+            fprintf(emitFILE, "int;");
             break;
         case floatK:
-            printf("float;");
+            fprintf(emitFILE, "float;");
             break;
         case stringK:
-            printf("string;");
+            fprintf(emitFILE, "string;");
             break;
     }
-    newLine();
-    prettyDECLARATION(d->next);
+    newLineInFile(emitFILE);
+    prettyDECLARATION(d->next, emitFILE);
 }
 
 /*
@@ -42,94 +45,94 @@ void prettyDECLARATION(DECLARATION *d) {
  * After we finish printing a statement, we must print a new line
  */
 
-void prettySTATEMENT(STATEMENT *s, int level) {
+void prettySTATEMENT(STATEMENT *s, int level, FILE* emitFILE) {
     // if null, stop, else print and recurse
     if (s == NULL) {
         return;
     }
     switch (s->kind) {
         case assignK:
-            prettySTATEMENTassign(s, level);
+            prettySTATEMENTassign(s, level, emitFILE);
             break;
         case fcallK:
-            prettySTATEMENTfunccall(s, level);
+            prettySTATEMENTfunccall(s, level, emitFILE);
             break;
         case ifK:
-            prettySTATEMENTif(s, level);
+            prettySTATEMENTif(s, level, emitFILE);
             break;
         case ifelseK:
-            prettySTATEMENTifelse(s, level);
+            prettySTATEMENTifelse(s, level, emitFILE);
             break;
         case whileK:
-            prettySTATEMENTwhile(s, level);
+            prettySTATEMENTwhile(s, level, emitFILE);
             break;
     }
     // print the next statement
-    prettySTATEMENT(s->next, level);
+    prettySTATEMENT(s->next, level, emitFILE);
 }
 
-void prettySTATEMENTassign(STATEMENT* s, int level) {
-    printTabs(level);
-    printf("%s = ", s->val.assignS.id->name);
-    prettyEXP(s->val.assignS.exp);
-    printf(";");
-    newLine();
+void prettySTATEMENTassign(STATEMENT* s, int level, FILE* emitFILE) {
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "%s = ", s->val.assignS.id->name);
+    prettyEXP(s->val.assignS.exp, emitFILE);
+    fprintf(emitFILE, ";");
+    newLineInFile(emitFILE);
 }
 
-void prettySTATEMENTfunccall(STATEMENT* s, int level) {
+void prettySTATEMENTfunccall(STATEMENT* s, int level, FILE* emitFILE) {
     FUNCTIONCALL* fc = s->val.fcallS;
-    printTabs(level);
+    printTabsToFile(level, emitFILE);
     switch (fc->kind) {
         case readK:
-            printf("read %s", fc->val.readid->name);
+            fprintf(emitFILE, "read %s", fc->val.readid->name);
             break;
         case printK:
-            printf("print ");
-            prettyEXP(fc->val.printexp);
+            fprintf(emitFILE, "print ");
+            prettyEXP(fc->val.printexp, emitFILE);
             break;
     }
-    printf(";");
-    newLine();
+    fprintf(emitFILE, ";");
+    newLineInFile(emitFILE);
 }
 
-void prettySTATEMENTif(STATEMENT* s, int level) {
-    printTabs(level);
-    printf("if ");
-    prettyEXP(s->val.ifS.condition);
-    printf(" then");
-    newLine();
-    prettySTATEMENT(s->val.ifS.body, level + 1);
-    printTabs(level);
-    printf("endif");
-    newLine();
+void prettySTATEMENTif(STATEMENT* s, int level, FILE* emitFILE) {
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "if ");
+    prettyEXP(s->val.ifS.condition, emitFILE);
+    fprintf(emitFILE, " then");
+    newLineInFile(emitFILE);
+    prettySTATEMENT(s->val.ifS.body, level + 1, emitFILE);
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "endif");
+    newLineInFile(emitFILE);
 }
 
-void prettySTATEMENTifelse(STATEMENT* s, int level) {
-    printTabs(level);
-    printf("if ");
-    prettyEXP(s->val.ifelseS.condition);
-    printf(" then");
-    newLine();
-    prettySTATEMENT(s->val.ifelseS.thenpart, level + 1);
-    printTabs(level);
-    printf("else");
-    newLine();
-    prettySTATEMENT(s->val.ifelseS.elsepart, level + 1);
-    printTabs(level);
-    printf("endif");
-    newLine();
+void prettySTATEMENTifelse(STATEMENT* s, int level, FILE* emitFILE) {
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "if ");
+    prettyEXP(s->val.ifelseS.condition, emitFILE);
+    fprintf(emitFILE, " then");
+    newLineInFile(emitFILE);
+    prettySTATEMENT(s->val.ifelseS.thenpart, level + 1, emitFILE);
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "else");
+    newLineInFile(emitFILE);
+    prettySTATEMENT(s->val.ifelseS.elsepart, level + 1, emitFILE);
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "endif");
+    newLineInFile(emitFILE);
 }
 
-void prettySTATEMENTwhile(STATEMENT* s, int level) {
-    printTabs(level);
-    printf("while ");
-    prettyEXP(s->val.whileS.condition);
-    printf(" do");
-    newLine();
-    prettySTATEMENT(s->val.whileS.body, level + 1);
-    printTabs(level);
-    printf("done");
-    newLine();
+void prettySTATEMENTwhile(STATEMENT* s, int level, FILE* emitFILE) {
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "while ");
+    prettyEXP(s->val.whileS.condition, emitFILE);
+    fprintf(emitFILE, " do");
+    newLineInFile(emitFILE);
+    prettySTATEMENT(s->val.whileS.body, level + 1, emitFILE);
+    printTabsToFile(level, emitFILE);
+    fprintf(emitFILE, "done");
+    newLineInFile(emitFILE);
 }
 
 /*
@@ -138,69 +141,56 @@ void prettySTATEMENTwhile(STATEMENT* s, int level) {
  * We do not print a new line after printing an expression.
  */
 
-void prettyEXP(EXP *e) {
+void prettyEXP(EXP *e, FILE* emitFILE) {
     switch (e->kind) {
         case idK:
-            printf("%s", e->val.idE->name);
+            fprintf(emitFILE, "%s", e->val.idE->name);
             break;
         case intvalK:
-            printf("%i", e->val.intvalE);
+            fprintf(emitFILE, "%i", e->val.intvalE);
             break;
         case floatvalK:
-            printf("%f", e->val.floatvalE);
+            fprintf(emitFILE, "%f", e->val.floatvalE);
             break;
         case stringvalK:
-            printf("%s", e->val.stringvalE);
+            fprintf(emitFILE, "%s", e->val.stringvalE);
             break;
         case timesK:
-            printf("(");
+            fprintf(emitFILE, "(");
             // recursively print the left expression
-            prettyEXP(e->val.timesE.left);
+            prettyEXP(e->val.timesE.left, emitFILE);
             // print the times
-            printf("*");
+            fprintf(emitFILE, "*");
             // recursively print the right expression
-            prettyEXP(e->val.timesE.right);
-            printf(")");
+            prettyEXP(e->val.timesE.right, emitFILE);
+            fprintf(emitFILE, ")");
             break;
         case divK:
-            printf("(");
-            prettyEXP(e->val.divE.left);
-            printf("/");
-            prettyEXP(e->val.divE.right);
-            printf(")");
+            fprintf(emitFILE, "(");
+            prettyEXP(e->val.divE.left, emitFILE);
+            fprintf(emitFILE, "/");
+            prettyEXP(e->val.divE.right, emitFILE);
+            fprintf(emitFILE, ")");
             break;
         case plusK:
-            printf("(");
-            prettyEXP(e->val.plusE.left);
-            printf("+");
-            prettyEXP(e->val.plusE.right);
-            printf(")");
+            fprintf(emitFILE, "(");
+            prettyEXP(e->val.plusE.left, emitFILE);
+            fprintf(emitFILE, "+");
+            prettyEXP(e->val.plusE.right, emitFILE);
+            fprintf(emitFILE, ")");
             break;
         case minusK:
-            printf("(");
-            prettyEXP(e->val.minusE.left);
-            printf("-");
-            prettyEXP(e->val.minusE.right);
-            printf(")");
+            fprintf(emitFILE, "(");
+            prettyEXP(e->val.minusE.left, emitFILE);
+            fprintf(emitFILE, "-");
+            prettyEXP(e->val.minusE.right, emitFILE);
+            fprintf(emitFILE, ")");
             break;
         case uminusK:
-            printf("(");
-            printf("-");
-            prettyEXP(e->val.uminusE);
-            printf(")");
+            fprintf(emitFILE, "(");
+            fprintf(emitFILE, "-");
+            prettyEXP(e->val.uminusE, emitFILE);
+            fprintf(emitFILE, ")");
             break;
     }
-}
-
-// Helpers
-
-void printTabs(int n) {
-    int i;
-    for (i = 0; i < n; i++) {
-        printf("    ");
-    }
-}
-
-void newLine() {
-    printf("\n");
 }

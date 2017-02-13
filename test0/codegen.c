@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "tree.h"
 #include "codegen.h"
+#include "outputhelpers.h"
 
 void addHeaderCode(FILE* emitFILE) {
    FILE* headerFILE;
@@ -189,16 +190,29 @@ void genEXP(EXP* e, FILE* emitFILE) {
             fprintf(emitFILE, "%s", e->val.stringvalE);
             break;
         case timesK:
-            // TODO add functionality so you can tell whether this is string multiplication
-            // and handle it accordingly
-            fprintf(emitFILE, "(");
-            // recursively gen the left expression
-            genEXP(e->val.timesE.left, emitFILE);
-            // print the times
-            fprintf(emitFILE, "*");
-            // recursively gen the right expression
-            genEXP(e->val.timesE.right, emitFILE);
-            fprintf(emitFILE, ")");
+            // check if this is string multiplication
+            if (e->val.timesE.stringMultForward) {
+                fprintf(emitFILE, "mulstr1(");
+                genEXP(e->val.timesE.left, emitFILE);
+                fprintf(emitFILE, ", ");
+                genEXP(e->val.timesE.right, emitFILE);
+                fprintf(emitFILE, ")");
+            } else if (e->val.timesE.stringMultReverse) {
+                fprintf(emitFILE, "mulstr2(");
+                genEXP(e->val.timesE.left, emitFILE);
+                fprintf(emitFILE, ", ");
+                genEXP(e->val.timesE.right, emitFILE);
+                fprintf(emitFILE, ")");
+            } else {
+                fprintf(emitFILE, "(");
+                // recursively gen the left expression
+                genEXP(e->val.timesE.left, emitFILE);
+                // print the times
+                fprintf(emitFILE, "*");
+                // recursively gen the right expression
+                genEXP(e->val.timesE.right, emitFILE);
+                fprintf(emitFILE, ")");
+            }
             break;
         case divK:
             fprintf(emitFILE, "(");
@@ -208,12 +222,20 @@ void genEXP(EXP* e, FILE* emitFILE) {
             fprintf(emitFILE, ")");
             break;
         case plusK:
-            // TODO handle string addition
-            fprintf(emitFILE, "(");
-            genEXP(e->val.plusE.left, emitFILE);
-            fprintf(emitFILE, "+");
-            genEXP(e->val.plusE.right, emitFILE);
-            fprintf(emitFILE, ")");
+            // check if this is string addition (concatenation)
+            if (e->val.plusE.stringAddition) {
+                fprintf(emitFILE, "concat(");
+                genEXP(e->val.plusE.left, emitFILE);
+                fprintf(emitFILE, ", ");
+                genEXP(e->val.plusE.right, emitFILE);
+                fprintf(emitFILE, ")");
+            } else {
+                fprintf(emitFILE, "(");
+                genEXP(e->val.plusE.left, emitFILE);
+                fprintf(emitFILE, "+");
+                genEXP(e->val.plusE.right, emitFILE);
+                fprintf(emitFILE, ")");
+            }
             break;
         case minusK:
             fprintf(emitFILE, "(");
@@ -229,17 +251,4 @@ void genEXP(EXP* e, FILE* emitFILE) {
             fprintf(emitFILE, ")");
             break;
     }
-}
-
-// Helpers
-
-void printTabsToFile(int n, FILE* emitFILE) {
-    int i;
-    for (i = 0; i < n; i++) {
-        fprintf(emitFILE, "    ");
-    }
-}
-
-void newLineInFile(FILE* emitFILE) {
-    fprintf(emitFILE, "\n");
 }

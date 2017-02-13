@@ -29,6 +29,20 @@ void checkCondition(TYPE *t, int lineno) {
     }
 }
 
+void setStringMult(EXP* exp, TYPE *left, TYPE *right) {
+    if (left->kind == stringK && right->kind == intK) {
+        exp->val.timesE.stringMultForward = 1;
+    } else if (left->kind == intK && right->kind == stringK) {
+        exp->val.timesE.stringMultReverse = 1;
+    }
+}
+
+void setStringAddition(EXP* exp, TYPE *left, TYPE *right) {
+    if (left->kind == stringK && right->kind == stringK) {
+        exp->val.plusE.stringAddition = 1;
+    }
+}
+
 void typePROGRAM(PROGRAM *p) {
     initTypes();
     // we don't need to type check the declarations
@@ -99,6 +113,7 @@ void typeEXP(EXP* exp) {
         case timesK:
             typeEXP(exp->val.timesE.left);
             typeEXP(exp->val.timesE.right);
+            setStringMult(exp, exp->val.timesE.left->type, exp->val.timesE.right->type);
             exp->type = getTimesExpType(exp->val.timesE.left->type, exp->val.timesE.right->type, exp->lineno);
             break;
         case divK:
@@ -109,6 +124,7 @@ void typeEXP(EXP* exp) {
         case plusK:
             typeEXP(exp->val.plusE.left);
             typeEXP(exp->val.plusE.right);
+            setStringAddition(exp, exp->val.plusE.left->type, exp->val.plusE.right->type);
             exp->type = getPlusExpType(exp->val.plusE.left->type, exp->val.plusE.right->type, exp->lineno);
             break;
         case minusK:
