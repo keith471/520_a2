@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define BUFSIZE 8192
+#define BUFSIZE 1024
 
 char *concat(char *s1, char *s2) {
 	int len1 = strlen(s1);
@@ -41,16 +41,22 @@ char *mulstr2(int n, char *s1) {
 }
 
 int main() {
-    char* name = "";
+    char name[BUFSIZE] = "";
     int age = 0;
     float height = 0.0;
-    int cool = 0;
-    char* beans = "";
 
-    name = "keith";
-    age = 23;
-    height = 6.200000;
-    printf("%s", mulstr1(name, 3));
+    scanf("%s", name);
+    scanf("%d", &age);
+    scanf("%f", &height);
+    printf("%s", name);
+    printf("%s", "\n");
+    printf("%d", age);
+    printf("%s", "\n");
+    printf("%f", height);
+    printf("%s", "\n");
+    scanf("%s", name);
+    printf("%s", name);
+    printf("%s", "\n");
 
     exit(0);
 }

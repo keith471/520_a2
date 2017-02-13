@@ -1,0 +1,39 @@
+var name: string;
+var age: int;
+var height: float;
+var nice: string;
+
+name = "keith";
+age = -23;
+height = 6.2;
+
+nice = "a super duper string 1234567890 \t\r\n\a\f\v\"\\ ~``!@#$%^&*()_-+={}[](()''<>,./?";
+
+_Shizah = 5;
+_44 = 6;
+
+
+height = 6.2+-4.4;
+
+read name;
+print age;
+
+// age = 22 + 1;
+// age = 46/2;
+// age = 3 + (4 * 5);
+
+if (3+4) then
+    // age = 23;
+    while x do
+        // eat shit
+    done
+else
+    //cool
+
+endif
+
+print ((((1))));
+
+while (who_cares) do
+    x = 5;
+done

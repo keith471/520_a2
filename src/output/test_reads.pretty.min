@@ -1,0 +1,16 @@
+var name: string;
+var age: int;
+var height: float;
+
+read name;
+read age;
+read height;
+print name;
+print "\n";
+print age;
+print "\n";
+print height;
+print "\n";
+read name;
+print name;
+print "\n";

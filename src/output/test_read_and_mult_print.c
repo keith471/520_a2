@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define BUFSIZE 8192
+#define BUFSIZE 1024
 
 char *concat(char *s1, char *s2) {
 	int len1 = strlen(s1);
@@ -38,4 +38,13 @@ char *mulstr1(char *s1, int n){
 
 char *mulstr2(int n, char *s1) {
     return mulstr1(s1, n);
+}
+
+int main() {
+    char name[BUFSIZE] = "";
+
+    scanf("%s", name);
+    printf("%s", mulstr2(5, concat(name, "\n")));
+
+    exit(0);
 }

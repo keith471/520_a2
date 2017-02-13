@@ -1,7 +1,7 @@
 %{
 #include <stdio.h> // for printf
 #include "y.tab.h"  // to get the token types that we return to Bison
-#include "error.h"
+int yyerror(char *s);
 %}
 %option yylineno
 %%

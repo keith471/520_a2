@@ -1,0 +1,4 @@
+var name: string;
+
+read name;
+print (5*(name+"\n"));

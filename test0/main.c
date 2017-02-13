@@ -29,20 +29,40 @@ char* concat(const char *s1, const char *s2) {
 
 /*
  * parse and return the program name (without the .min extension)
- * splits the string at the first occurrence of '.'
  */
 char* getProgramName(char* programFilename) {
     int dotIndex = -1;
+    int slashIndex = 0;
     int i;
-    // get the index of the '.' in the name of the program file
-    for (i = 0; i < strlen(programFilename); i++) {
-        if (programFilename[i] == '.') {
+    // get the index of the '.' and first '/' in the name of the program file
+    for (i = strlen(programFilename) - 1; i >= 0; i--) {
+        if (programFilename[i] == '.' && dotIndex == -1) {
             dotIndex = i;
+        }
+        if (programFilename[i] == '/') {
+            slashIndex = i;
             break;
         }
     }
 
     char* name = malloc(strlen(programFilename)+1);
+
+    int end;
+    if (dotIndex == -1) {
+        end = strlen(programFilename);
+    } else {
+        end = dotIndex;
+    }
+
+    for (i = slashIndex; i < end; i++) {
+        name[i] = programFilename[i];
+    }
+    name[i] = '\0';
+
+    printf("%s\n", name);
+    exit(1);
+
+
     if (dotIndex != -1) {
         strncpy(name, programFilename, i);
         name[i] = '\0';

@@ -3,26 +3,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "error.h"
-
 // AST stuff
 #include "tree.h"
 
-// bison complains if this is not here for some reason
+// Stuff from flex that bison needs to know about
 extern int yylex();
+extern int yyparse();
+extern FILE* yyin;
+extern int yylineno;
+extern char* yytext;
 
-// more AST stuff
-// this is the root of the AST!
-// defined in main, but created here
-extern PROGRAM* theprogram;
+// AST stuff
+// TODO: Modify --> this should be the head of the AST
+extern EXP* theexpression;
 
-/*
-Can probs do something like this:
-extern PROGRAM* theprogram;
-Paired with the following below:
-prog: exp { theprogram = $$; }
-*/
-
+// called if there is a syntax or parsing error
+void yyerror(const char *s);
 %}
 
 %union {
@@ -30,11 +26,6 @@ prog: exp { theprogram = $$; }
 	float fval;
 	char *sval;
     struct EXP* exp;
-    struct DECLARATION* declaration;
-    struct STATEMENT* statement;
-    struct TYPE* type;
-    struct ID* id;
-    struct FUNCTIONCALL* functioncall;
 }
 
 // define the constant-string tokens
@@ -56,14 +47,8 @@ prog: exp { theprogram = $$; }
 %token <sval> tSTRINGVAL
 
 %type <exp> exp
-%type <declaration> declarations declaration
-%type <statement> statements statement assignmentstatement ifthenstatement ifthenelsestatement whilestatement
-%type <type> type
-%type <id> identifier
-%type <functioncall> funccallstatement
 
-
-%start program
+%start prog
 
 %left tMINUS tPLUS
 %left tTIMES tDIVIDE
@@ -74,144 +59,84 @@ prog: exp { theprogram = $$; }
 // the first rule defined is the highest-level rule
 // (note: $1 is the first thing matched, $2 is the second, etc.)
 
-// this is how we create the root node of the AST :) We build up all the entire tree in this fashion!
-// i.e. here we build a PROGRAM from an EXP, and below we build the EXP :)
-/*
-prog: exp { theprogram = makePROGRAM($1); }
-    ;
-*/
-
-program:
-    declarations statements
+prog:
+    dcls stmts
         {
             #ifdef BISON_DEBUG
                 printf("done with a MiniLang file!\n");
             #endif
-            theprogram = makePROGRAM($1, $2);
         }
     ;
 
-declarations:
-      /*epsilon*/
-        { $$ = NULL; }
-    | declarations declaration
+dcls:
+    dcls dcl | /*epsilon*/
         {
             #ifdef BISON_DEBUG
                 printf("found the declarations\n");
             #endif
-            //$$ = appendDECLARATION($2, $1);
-            $$ = appendDECLARATION($1, $2);
         }
     ;
 
-statements:
-      /*epsilon*/
-        { $$ = NULL; }
-    | statements statement
+stmts:
+    stmts stmt | /*epsilon*/
         {
             #ifdef BISON_DEBUG
                 printf("found the statements\n");
             #endif
-            $$ = appendSTATEMENT($1, $2);
         }
     ;
 
-declaration:
-    tVAR identifier tCOLON type tSEMICOLON
+dcl:
+    tVAR tIDENTIFIER tCOLON tFLOAT tSEMICOLON
         {
             #ifdef BISON_DEBUG
-                printf("found a declaration: %s\n", $2);
+                printf("found a float declaration: %s\n", $2);
             #endif
-            $$ = makeDECLARATION($2, $4);
+        }
+    | tVAR tIDENTIFIER tCOLON tINT tSEMICOLON
+        {
+            #ifdef BISON_DEBUG
+                printf("found an int declaration: %s\n", $2);
+            #endif
+        }
+    | tVAR tIDENTIFIER tCOLON tSTRING tSEMICOLON
+        {
+            #ifdef BISON_DEBUG
+                printf("found a string declaration: %s\n", $2);
+            #endif
         }
     ;
 
-type:
-    tINT
-        {
-            #ifdef BISON_DEBUG
-                printf("int declaration\n");
-            #endif
-            $$ = makeTYPEint();
-        }
-    | tFLOAT
-        {
-            #ifdef BISON_DEBUG
-                printf("float declaration\n");
-            #endif
-            $$ = makeTYPEfloat();
-        }
-    | tSTRING
-        {
-            #ifdef BISON_DEBUG
-                printf("string declaration\n");
-            #endif
-            $$ = makeTYPEstring();
-        }
+stmt:
+    assignment | funccall | whileloop | condblock
     ;
 
-statement:
-      assignmentstatement
-        { $$ = $1; }
-    | funccallstatement
-        { $$ = makeSTATEMENTfunccall($1); }
-    | ifthenstatement
-        { $$ = $1; }
-    | ifthenelsestatement
-        { $$ = $1; }
-    | whilestatement
-        { $$ = $1; }
-    ;
-
-assignmentstatement:
-    identifier tASSIGN exp tSEMICOLON
+assignment:
+    tIDENTIFIER tASSIGN exp tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found an assignment\n");
             #endif
-            $$ = makeSTATEMENTassign($1, $3);
         }
     ;
 
-funccallstatement:
-    tREAD identifier tSEMICOLON
+funccall:
+    tREAD tIDENTIFIER tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found a call to read\n");
             #endif
-            $$ = makeFUNCTIONCALLread($2);
         }
     | tPRINT exp tSEMICOLON
         {
             #ifdef BISON_DEBUG
                 printf("found a call to print\n");
             #endif
-            $$ = makeFUNCTIONCALLprint($2);
         }
     ;
 
-identifier:
-    tIDENTIFIER
-        { $$ = makeID($1); }
-    ;
-
-whilestatement:
-    tWHILE exp tDO statements tDONE
-        { $$ = makeSTATEMENTwhile($2, $4); }
-    ;
-
-ifthenstatement:
-    tIF exp tTHEN statements tENDIF
-        { $$ = makeSTATEMENTif($2, $4); }
-    ;
-
-ifthenelsestatement:
-    tIF exp tTHEN statements tELSE statements tENDIF
-        { $$ = makeSTATEMENTifelse($2, $4, $6); }
-    ;
-
 exp:
-      identifier
+      tIDENTIFIER
         {
             $$ = makeEXPid($1);
         }
@@ -268,6 +193,67 @@ exp:
         }
     ;
 
+whileloop:
+    tWHILE exp tDO stmts tDONE
+    ;
+
+condblock:
+    ifblock elseblock tENDIF
+    ;
+
+ifblock:
+    tIF exp tTHEN stmts
+    ;
+
+elseblock:
+    tELSE stmts | /*epsilon*/
+    ;
+
 %%
 
-// nothing to go here
+int main(int argc, char* argv[]) {
+
+#ifdef FLEX_DEBUG
+    // parse through the input until there is no more:
+    do {
+        yylex();
+    } while (!feof(yyin));
+#endif
+
+#ifndef FLEX_DEBUG
+    // If file name passed, read from that file. Else, do nothing
+    char* fname;
+    if (argc == 2) {
+        fname = argv[1];
+    } else {
+        fname = "./src/test.min";
+    }
+
+    // open a file handle to the file to scan
+    FILE *myfile = fopen(fname, "r");
+    // make sure it's valid:
+    if (!myfile) {
+        printf("Error: can't open the file '%s'\n", fname);
+        return 1;
+    }
+    // set lex to read from it instead of defaulting to STDIN:
+    yyin = myfile;
+
+    // parse through the input until there is no more:
+    do {
+        yyparse();
+    } while (!feof(yyin));
+
+    printf("VALID\n");
+#endif
+
+}
+
+void yyerror(const char *s) {
+#ifdef BISON_DEBUG
+	printf("YIKES, parse error on line %d, before %s. Message: %s\n", yylineno, yytext, s);
+#endif
+    printf("INVALID\n");
+	// exit on parse error
+	exit(1);
+}

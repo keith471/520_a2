@@ -50,7 +50,7 @@ void genDECLARATION(DECLARATION* declaration, int level, FILE* emitFILE) {
             fprintf(emitFILE, "float %s = 0.0;", declaration->id->name);
             break;
         case stringK:
-            fprintf(emitFILE, "char* %s = \"\";", declaration->id->name);
+            fprintf(emitFILE, "char %s[BUFSIZE] = \"\";", declaration->id->name);
             break;
     }
     newLineInFile(emitFILE);
@@ -145,10 +145,10 @@ void genSTATEMENTfunccall(STATEMENT* s, int level, FILE* emitFILE) {
 void genREAD(ID* id, FILE* emitFILE) {
     switch (id->symbol->type->kind) {
         case intK:
-            fprintf(emitFILE, "scanf(\"%%d\", %s)", id->name);
+            fprintf(emitFILE, "scanf(\"%%d\", &%s)", id->name);
             break;
         case floatK:
-            fprintf(emitFILE, "scanf(\"%%f\", %s)", id->name);
+            fprintf(emitFILE, "scanf(\"%%f\", &%s)", id->name);
             break;
         case stringK:
             fprintf(emitFILE, "scanf(\"%%s\", %s)", id->name);

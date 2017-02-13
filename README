@@ -1,8 +1,9 @@
-# COMP 520 Assignment 1 - Scanner/Parser for MiniLang
+# COMP 520 Assignment 2 - The rest of MiniLang!
 
 Keith Strickling
 260674699
 
-# Instructions
+## Instructions
 cd into keith_strickling
 Run with `./test.sh`
+The output files will be written to `./src/output/`
