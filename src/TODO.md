@@ -1,8 +1,7 @@
 # TODOS
 
-- add an easier way to test the program (feed programs in from file, as an option)
-- test out type checking and symbol table
-- print symbol table to file
-- code generation!
-
+- add functionality for generating string multiplication and addition
+- update where we pretty print to!
+- test that unary minus works in c
 - check if there are any additional things we need to support in the language
+- make sure to update build.sh, run.sh

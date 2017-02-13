@@ -39,3 +39,15 @@ char *mulstr1(char *s1, int n){
 char *mulstr2(int n, char *s1) {
     return mulstr1(s1, n);
 }
+int main() {
+    char* name = "";
+    int age = 0;
+    float height = 0.0;
+    int cool = 0;
+    char* beans = "";
+
+    name = "keith";
+    age = 23;
+    height = 6.200000;
+    exit(0);
+}

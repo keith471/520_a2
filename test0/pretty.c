@@ -49,37 +49,24 @@ void prettySTATEMENT(STATEMENT *s, int level) {
     }
     switch (s->kind) {
         case assignK:
-            //printf("assignment statement\n");
             prettySTATEMENTassign(s, level);
             break;
         case fcallK:
-            //printf("function call statement\n");
             prettySTATEMENTfunccall(s, level);
             break;
         case ifK:
-            //printf("if statement\n");
             prettySTATEMENTif(s, level);
             break;
         case ifelseK:
-            //printf("if/else statement\n");
             prettySTATEMENTifelse(s, level);
             break;
         case whileK:
-            //printf("while statement\n");
             prettySTATEMENTwhile(s, level);
             break;
     }
     // print the next statement
     prettySTATEMENT(s->next, level);
 }
-
-/*
-void prettySTATEMENTsequence(STATEMENT* s, int level) {
-    // print the first statement and then the second
-    prettySTATEMENT(s->val.sequenceS.first, level);
-    prettySTATEMENT(s->val.sequenceS.second, level);
-}
-*/
 
 void prettySTATEMENTassign(STATEMENT* s, int level) {
     printTabs(level);
@@ -154,10 +141,10 @@ void prettySTATEMENTwhile(STATEMENT* s, int level) {
 void prettyEXP(EXP *e) {
     switch (e->kind) {
         case idK:
-            printf("%s",e->val.idE->name);
+            printf("%s", e->val.idE->name);
             break;
         case intvalK:
-            printf("%i",e->val.intvalE);
+            printf("%i", e->val.intvalE);
             break;
         case floatvalK:
             printf("%f", e->val.floatvalE);
