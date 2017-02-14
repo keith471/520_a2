@@ -1,0 +1,6 @@
+symbol	type
+total	float
+neg_message	string
+price_per_scoop	float
+pos_message	string
+numScoops	int

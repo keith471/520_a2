@@ -1,0 +1,6 @@
+symbol	type
+name	string
+age	int
+height	float
+beans	string
+cool	int

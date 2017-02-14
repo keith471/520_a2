@@ -121,9 +121,15 @@ void genSTATEMENTwhile(STATEMENT* s, int level, FILE* emitFILE) {
 
 void genSTATEMENTassign(STATEMENT* s, int level, FILE* emitFILE) {
     printTabsToFile(level, emitFILE);
-    fprintf(emitFILE, "%s = ", s->val.assignS.id->name);
-    genEXP(s->val.assignS.exp, emitFILE);
-    fprintf(emitFILE, ";");
+    if (s->val.assignS.id->symbol->type->kind == stringK) {
+        fprintf(emitFILE, "strcpy(%s, ", s->val.assignS.id->name);
+        genEXP(s->val.assignS.exp, emitFILE);
+        fprintf(emitFILE, ");");
+    } else {
+        fprintf(emitFILE, "%s = ", s->val.assignS.id->name);
+        genEXP(s->val.assignS.exp, emitFILE);
+        fprintf(emitFILE, ";");
+    }
     newLineInFile(emitFILE);
 }
 

@@ -1,0 +1,4 @@
+symbol	type
+i	int
+j	int
+k	int

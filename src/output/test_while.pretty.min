@@ -1,0 +1,18 @@
+var i: int;
+var j: int;
+var k: int;
+
+i = 3;
+while i do
+    j = 3;
+    while j do
+        k = 3;
+        while k do
+            print ((i+k)+j);
+            print "\n";
+            k = (k-1);
+        done
+        j = (j-1);
+    done
+    i = (i-1);
+done

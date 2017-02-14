@@ -7,3 +7,6 @@ Keith Strickling
 cd into keith_strickling
 Run with `./test.sh`
 The output files will be written to `./src/output/`
+
+## References
+The work here is based off of the joos compiler source code and Hanfeng's reference compiler.

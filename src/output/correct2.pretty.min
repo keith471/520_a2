@@ -1,0 +1,20 @@
+var numScoops: int;
+var price_per_scoop: float;
+var pos_message: string;
+var neg_message: string;
+var total: float;
+
+price_per_scoop = 1.250000;
+pos_message = "Good choice!";
+neg_message = "Your loss :(";
+print "How many scoops of ice cream cones would you like?";
+read numScoops;
+if numScoops then
+    print pos_message;
+else
+    print neg_message;
+endif
+total = (numScoops*price_per_scoop);
+print "Your total is ";
+print total;
+print "\n";

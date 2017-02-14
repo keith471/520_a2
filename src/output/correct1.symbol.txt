@@ -1,0 +1,7 @@
+symbol	type
+_random_string	string
+total	int
+odd	int
+tmp	int
+n1	int
+n2	int
