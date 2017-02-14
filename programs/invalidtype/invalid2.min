@@ -1,6 +1,11 @@
-var name: string;
-var age: int;
+// add an int and a string
 
-age = 23;
-// assign an int into a string
-name = age;
+var intv: int;
+var stringv: string;
+var floatv: float;
+
+intv = intv + intv;
+floatv = floatv + floatv;
+floatv = floatv + intv;
+stringv = stringv + stringv;
+print stringv+intv;

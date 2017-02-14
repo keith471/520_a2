@@ -4,6 +4,17 @@ Keith Strickling
 260674699
 
 ## Instructions
+### In general
+```
+cd keith_strickling/src
+make clean
+make main
+```
+The above produces the executable `out` in the src folder. Then, from **anywhere**, you can run the executable with
+`<path_to_out> <path_to_min_file> <path_to_src_folder>`
+which will write all output files to `<path_to_src_folder/output/`
+
+### If using test.sh
 cd into keith_strickling
 Run with `./test.sh`
 The output files will be written to `./src/output/`

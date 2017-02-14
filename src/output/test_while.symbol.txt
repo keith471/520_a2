@@ -1,4 +1,3 @@
 symbol	type
-i	int
-j	int
-k	int
+a	string
+b	string

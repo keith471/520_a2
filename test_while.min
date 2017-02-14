@@ -3,9 +3,12 @@ var b: string;
 
 a = "hello\n";
 b = a;
+
 print a;
 print b;
+
 read b;
+
 print a;
 print "\n";
 print b;

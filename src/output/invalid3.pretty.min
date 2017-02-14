@@ -2,5 +2,4 @@ var weight: float;
 var age: int;
 
 weight = age;
-// assign a float into an int
 age = weight;

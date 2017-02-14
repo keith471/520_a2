@@ -4,11 +4,13 @@
 #include "codegen.h"
 #include "outputhelpers.h"
 
+extern char* headerfilepath;
+
 void addHeaderCode(FILE* emitFILE) {
    FILE* headerFILE;
    char c;
 
-   headerFILE = fopen("headercode.txt", "r");
+   headerFILE = fopen(headerfilepath, "r");
 
    while ((c = fgetc(headerFILE)) != EOF) {
        fputc(c, emitFILE);

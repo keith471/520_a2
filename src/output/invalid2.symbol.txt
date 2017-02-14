@@ -1,0 +1,4 @@
+symbol	type
+intv	int
+stringv	string
+floatv	float

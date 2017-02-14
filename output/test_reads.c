@@ -41,17 +41,22 @@ char *mulstr2(int n, char *s1) {
 }
 
 int main() {
-    char a[BUFSIZE] = "";
-    char b[BUFSIZE] = "";
+    char name[BUFSIZE] = "";
+    int age = 0;
+    float height = 0.0;
 
-    strcpy(a, "hello\n");
-    strcpy(b, a);
-    printf("%s", a);
-    printf("%s", b);
-    scanf("%s", b);
-    printf("%s", a);
+    scanf("%s", name);
+    scanf("%d", &age);
+    scanf("%f", &height);
+    printf("%s", name);
     printf("%s", "\n");
-    printf("%s", b);
+    printf("%d", age);
+    printf("%s", "\n");
+    printf("%f", height);
+    printf("%s", "\n");
+    scanf("%s", name);
+    printf("%s", name);
+    printf("%s", "\n");
 
     exit(0);
 }

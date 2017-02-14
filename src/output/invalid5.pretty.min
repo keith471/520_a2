@@ -1,9 +1,6 @@
-// multiply two strings
-
 var s1: string;
 var s2: string;
 
 s1 = "hello";
 s2 = " there";
-
-print s1*s2;
+print (s1*s2);

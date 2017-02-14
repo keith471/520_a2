@@ -1,0 +1,9 @@
+var intv: int;
+var stringv: string;
+var floatv: float;
+
+intv = (intv+intv);
+floatv = (floatv+floatv);
+floatv = (floatv+intv);
+stringv = (stringv+stringv);
+print (stringv+intv);
